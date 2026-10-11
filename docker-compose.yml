@@ -26,5 +26,27 @@ services:
       retries: 10
       start_period: 10s
 
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-django-insecure-dev-only-change-me}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-1}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-platescan}
+      # Runtime role (DML only, subject to RLS)
+      DB_USER: ${DB_APP_USER:-app_rw}
+      DB_PASSWORD: ${DB_APP_PASSWORD:-app_rw_pw}
+      # Owner role, used by entrypoint.sh for migrations only
+      DB_OWNER_USER: ${DB_OWNER_USER:-app_owner}
+      DB_OWNER_PASSWORD: ${DB_OWNER_PASSWORD:-app_owner_pw}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+
 volumes:
   pgdata:
