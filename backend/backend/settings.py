@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'api',
+    'tenancy',
     'rest_framework',
 ]
 
@@ -88,6 +88,9 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
+
+AUTH_USER_MODEL = 'tenancy.User'
 
 
 # Password validation
