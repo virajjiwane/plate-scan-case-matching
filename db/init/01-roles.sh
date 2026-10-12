@@ -16,6 +16,10 @@ psql -v ON_ERROR_STOP=1 \
 	CREATE ROLE :"owner" LOGIN CREATEDB NOSUPERUSER NOBYPASSRLS PASSWORD :'owner_pw';
 	CREATE ROLE :"app"   LOGIN NOCREATEDB NOSUPERUSER NOBYPASSRLS PASSWORD :'app_pw';
 
+	-- Lets the owner `SET ROLE` to the app role (used by the test suite to run
+	-- queries under RLS). INHERIT FALSE: the owner gains none of its privileges.
+	GRANT :"app" TO :"owner" WITH INHERIT FALSE, SET TRUE;
+
 	ALTER DATABASE :"db" OWNER TO :"owner";
 	REVOKE ALL ON DATABASE :"db" FROM PUBLIC;
 	GRANT CONNECT, TEMPORARY ON DATABASE :"db" TO :"owner", :"app";
