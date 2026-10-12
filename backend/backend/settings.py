@@ -86,6 +86,11 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', 'app_rw_pw'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '5432'),
+        # One transaction per request. The RLS tenant context is set with
+        # set_config(..., is_local=true), so it lives exactly as long as the
+        # request's transaction and can never leak to the next request on a
+        # reused connection.
+        'ATOMIC_REQUESTS': True,
     }
 }
 
